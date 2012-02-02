@@ -1,6 +1,6 @@
 tried_gem = false
 begin
-  require "jdbc_adapter"
+  require "arjdbc"
 rescue LoadError
   raise if tried_gem
   require 'rubygems'
@@ -16,6 +16,12 @@ module ActiveRecord
     class << self
       alias_method :jdbcdbf_connection, :jdbc_connection
     end
+  end
+end
+
+module ArJdbc::FoxPro
+  def self.arel2_visitors(config)
+    { 'jdbc' => ::Arel::Visitors::ToSql }
   end
 end
 
@@ -36,7 +42,7 @@ module JdbcSpec
       downcase_columns columns
     end
     def select(sql, name=nil)
-      rows = super sql, name      
+      rows = super sql, name
       downcase_rows rows
     end
     def quoted_true; 'true'; end
@@ -49,7 +55,7 @@ module JdbcSpec
     end
     def downcase_rows(rows)
       rows.map { |row| row.inject({}) { |new_row, pair| new_row[pair[0].downcase] = pair[1]; new_row } }
-    end    
+    end
   end
 end
 
