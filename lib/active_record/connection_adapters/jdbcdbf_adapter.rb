@@ -21,7 +21,11 @@ end
 
 module ArJdbc::FoxPro
   def self.arel2_visitors(config)
-    { 'jdbc' => ::Arel::Visitors::ToSql }
+      puts 'in foxpro'
+      puts config.inspect
+      puts 'in foxpro'
+
+      {}.tap {|v| %w(dbf jdbc jdbcdbf).each {|a| v[a] = ::Arel::Visitors::ToSQL } }
   end
 end
 
